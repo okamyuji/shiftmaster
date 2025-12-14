@@ -1,0 +1,89 @@
+{{define "request-period-detail"}}
+<div class="card p-6">
+  <h2 class="text-lg font-bold text-white mb-4">基本情報</h2>
+  <dl class="grid grid-cols-2 md:grid-cols-4 gap-4">
+    <div>
+      <dt class="text-sm text-slate-400">対象期間</dt>
+      <dd class="text-white font-medium">{{.Period.TargetPeriodLabel}}</dd>
+    </div>
+    <div>
+      <dt class="text-sm text-slate-400">受付開始日</dt>
+      <dd class="text-white font-medium">{{.Period.StartDate | formatDate}}</dd>
+    </div>
+    <div>
+      <dt class="text-sm text-slate-400">受付終了日</dt>
+      <dd class="text-white font-medium">{{.Period.EndDate | formatDate}}</dd>
+    </div>
+    <div>
+      <dt class="text-sm text-slate-400">状態</dt>
+      <dd class="text-white font-medium">
+        {{if .Period.IsOpen}}受付中{{else}}受付終了{{end}}
+      </dd>
+    </div>
+    <div>
+      <dt class="text-sm text-slate-400">スタッフ当たり上限</dt>
+      <dd class="text-white font-medium">{{.Period.MaxRequestsPerStaff}}件</dd>
+    </div>
+    <div>
+      <dt class="text-sm text-slate-400">日当たり上限</dt>
+      <dd class="text-white font-medium">{{.Period.MaxRequestsPerDay}}件</dd>
+    </div>
+    <div>
+      <dt class="text-sm text-slate-400">作成日</dt>
+      <dd class="text-white font-medium">{{.Period.CreatedAt | formatDateTime}}</dd>
+    </div>
+    <div>
+      <dt class="text-sm text-slate-400">更新日</dt>
+      <dd class="text-white font-medium">{{.Period.UpdatedAt | formatDateTime}}</dd>
+    </div>
+  </dl>
+</div>
+{{end}}
+
+{{define "content"}}
+<div class="space-y-6">
+  <!-- ヘッダー -->
+  <div class="flex items-center justify-between">
+    <div>
+      <a href="/requests" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        受付期間一覧に戻る
+      </a>
+      <h1 class="text-2xl font-bold text-white">{{.Period.TargetPeriodLabel}} 勤務希望受付期間</h1>
+    </div>
+    <div class="flex items-center gap-2">
+      {{if .Period.IsOpen}}
+      <span class="px-3 py-1 text-sm font-medium rounded-full bg-green-600 text-green-100">受付中</span>
+      <button hx-post="/requests/{{.Period.ID}}/close" hx-confirm="受付を終了しますか？" class="btn btn-secondary">
+        受付終了
+      </button>
+      {{else}}
+      <span class="px-3 py-1 text-sm font-medium rounded-full bg-slate-600 text-slate-200">受付終了</span>
+      <button hx-post="/requests/{{.Period.ID}}/open" hx-confirm="受付を開始しますか？" class="btn btn-primary">
+        受付開始
+      </button>
+      {{end}}
+    </div>
+  </div>
+
+  <!-- 情報カード -->
+  {{template "request-period-detail" .}}
+
+  <!-- 操作カード -->
+  <div class="card p-6">
+    <h2 class="text-lg font-bold text-white mb-4">操作</h2>
+    <div class="flex items-center gap-4">
+      <a href="/requests/{{.Period.ID}}/entries" class="btn btn-primary">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+          </path>
+        </svg>
+        勤務希望一覧
+      </a>
+    </div>
+  </div>
+</div>
+{{end}}

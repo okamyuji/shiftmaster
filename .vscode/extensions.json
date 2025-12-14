@@ -1,0 +1,48 @@
+{
+  // 推奨拡張機能
+  // VS Code起動時に自動的にインストールを提案します
+  "recommendations": [
+    // Go開発必須
+    "golang.go",
+
+    // Docker
+    "ms-azuretools.vscode-docker",
+
+    // Database
+    "cweijan.vscode-postgresql-client2",
+
+    // HTML/CSS/Tailwind
+    "bradlc.vscode-tailwindcss",
+    "ecmel.vscode-html-css",
+
+    // HTMX
+    "otovo-oss.htmx-tags",
+
+    // Git
+    "eamodio.gitlens",
+    "mhutchie.git-graph",
+
+    // コード品質
+    "streetsidesoftware.code-spell-checker",
+    "editorconfig.editorconfig",
+
+    // ファイルアイコン
+    "vscode-icons-team.vscode-icons",
+
+    // Markdown
+    "yzhang.markdown-all-in-one",
+
+    // REST API テスト
+    "humao.rest-client",
+
+    // YAML/TOML
+    "redhat.vscode-yaml",
+    "tamasfe.even-better-toml",
+
+    // SQL
+    "mtxr.sqltools"
+  ],
+
+  // 非推奨拡張機能（競合の可能性があるもの）
+  "unwantedRecommendations": []
+}

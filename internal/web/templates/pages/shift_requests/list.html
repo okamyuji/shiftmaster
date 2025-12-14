@@ -1,0 +1,113 @@
+{{define "shift-request-list"}}
+<div class="card">
+  {{if .Requests}}
+  <div class="overflow-x-auto">
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="text-left">対象日</th>
+          <th class="text-left">スタッフ</th>
+          <th class="text-left">希望シフト</th>
+          <th class="text-left">種別</th>
+          <th class="text-left">優先度</th>
+          <th class="text-left">コメント</th>
+          <th class="text-right">操作</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{range .Requests}}
+        <tr>
+          <td class="text-white font-medium">{{.TargetDate | formatDate}}</td>
+          <td class="text-slate-300">{{.StaffName}}</td>
+          <td class="text-slate-300">{{if .ShiftTypeName}}{{.ShiftTypeName}}{{else}}-{{end}}</td>
+          <td>
+            {{if eq .RequestType "off"}}
+            <span class="px-2 py-1 text-xs font-medium rounded-full bg-red-600 text-red-100">休み希望</span>
+            {{else if eq .RequestType "work"}}
+            <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-600 text-green-100">勤務希望</span>
+            {{else if eq .RequestType "shift"}}
+            <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-600 text-blue-100">シフト指定</span>
+            {{else}}
+            <span
+              class="px-2 py-1 text-xs font-medium rounded-full bg-slate-600 text-slate-200">{{.RequestTypeLabel}}</span>
+            {{end}}
+          </td>
+          <td>
+            {{if eq .Priority "high"}}
+            <span class="text-red-400">高</span>
+            {{else if eq .Priority "medium"}}
+            <span class="text-yellow-400">中</span>
+            {{else}}
+            <span class="text-slate-400">低</span>
+            {{end}}
+          </td>
+          <td class="text-slate-400 max-w-xs truncate">{{if .Comment}}{{.Comment}}{{else}}-{{end}}</td>
+          <td>
+            <div class="flex items-center justify-end gap-2">
+              <button hx-delete="/requests/entries/{{.ID}}" hx-confirm="この勤務希望を削除しますか？" hx-target="closest tr"
+                hx-swap="outerHTML" class="p-2 text-red-400 hover:text-red-300 transition-colors" title="削除">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                  </path>
+                </svg>
+              </button>
+            </div>
+          </td>
+        </tr>
+        {{end}}
+      </tbody>
+    </table>
+  </div>
+  {{else}}
+  <div class="p-12 text-center">
+    <div class="flex flex-col items-center gap-4">
+      <svg class="w-16 h-16 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+        </path>
+      </svg>
+      <h3 class="text-lg font-medium text-white">勤務希望がありません</h3>
+      <p class="text-slate-400">スタッフからの勤務希望を待っています</p>
+      {{if $.Period.IsOpen}}
+      <a href="/requests/{{$.Period.ID}}/entries/new" class="btn btn-primary">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+        勤務希望追加
+      </a>
+      {{end}}
+    </div>
+  </div>
+  {{end}}
+</div>
+{{end}}
+
+{{define "content"}}
+<div class="space-y-6">
+  <!-- ヘッダー -->
+  <div class="flex items-center justify-between">
+    <div>
+      <a href="/requests/{{.Period.ID}}"
+        class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-2">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        </svg>
+        受付期間詳細に戻る
+      </a>
+      <h1 class="text-2xl font-bold text-white">{{.Period.TargetPeriodLabel}} 勤務希望一覧</h1>
+    </div>
+    {{if .Period.IsOpen}}
+    <a href="/requests/{{.Period.ID}}/entries/new" class="btn btn-primary">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      勤務希望追加
+    </a>
+    {{end}}
+  </div>
+
+  <!-- 勤務希望一覧 -->
+  {{template "shift-request-list" .}}
+</div>
+{{end}}

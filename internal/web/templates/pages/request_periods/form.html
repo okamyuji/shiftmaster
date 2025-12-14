@@ -1,0 +1,100 @@
+{{define "content"}}
+<div class="max-w-2xl mx-auto space-y-6">
+  <!-- 戻るリンク -->
+  <div>
+    <a href="/requests" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      受付期間一覧に戻る
+    </a>
+  </div>
+
+  <!-- フォームカード -->
+  <div class="card p-6">
+    <h1 class="text-xl font-bold text-white mb-6">{{.Title}}</h1>
+
+    {{if .Period}}
+    <form hx-put="/requests/{{.Period.ID}}" hx-swap="outerHTML" class="space-y-6">
+      {{else}}
+      <form hx-post="/requests" hx-swap="outerHTML" class="space-y-6">
+        {{end}}
+        <!-- 対象年 -->
+        <div>
+          <label for="target_year" class="block text-sm font-medium text-slate-300 mb-2">
+            対象年 <span class="text-red-400">*</span>
+          </label>
+          <select id="target_year" name="target_year" required class="input">
+            {{$currentYear := .CurrentYear}}
+            {{range $i := iterate $currentYear (add $currentYear 3)}}
+            <option value="{{$i}}" {{if $.Period}}{{if eq $i $.Period.TargetYear}}selected{{end}}{{else}}{{if eq $i
+              $currentYear}}selected{{end}}{{end}}>{{$i}}年</option>
+            {{end}}
+          </select>
+        </div>
+
+        <!-- 対象月 -->
+        <div>
+          <label for="target_month" class="block text-sm font-medium text-slate-300 mb-2">
+            対象月 <span class="text-red-400">*</span>
+          </label>
+          <select id="target_month" name="target_month" required class="input">
+            {{$currentMonth := .CurrentMonth}}
+            {{range $i := iterate 1 13}}
+            <option value="{{$i}}" {{if $.Period}}{{if eq $i $.Period.TargetMonth}}selected{{end}}{{else}}{{if eq $i
+              $currentMonth}}selected{{end}}{{end}}>{{$i}}月</option>
+            {{end}}
+          </select>
+        </div>
+
+        <!-- 受付開始日 -->
+        <div>
+          <label for="start_date" class="block text-sm font-medium text-slate-300 mb-2">
+            受付開始日 <span class="text-red-400">*</span>
+          </label>
+          <input type="date" id="start_date" name="start_date" required
+            value="{{if .Period}}{{.Period.StartDate | formatDateInput}}{{end}}" class="input">
+        </div>
+
+        <!-- 受付終了日 -->
+        <div>
+          <label for="end_date" class="block text-sm font-medium text-slate-300 mb-2">
+            受付終了日 <span class="text-red-400">*</span>
+          </label>
+          <input type="date" id="end_date" name="end_date" required
+            value="{{if .Period}}{{.Period.EndDate | formatDateInput}}{{end}}" class="input">
+        </div>
+
+        <!-- スタッフ当たり上限 -->
+        <div>
+          <label for="max_requests_per_staff" class="block text-sm font-medium text-slate-300 mb-2">
+            スタッフ当たり希望上限数
+          </label>
+          <input type="number" id="max_requests_per_staff" name="max_requests_per_staff" min="1" max="31"
+            value="{{if .Period}}{{.Period.MaxRequestsPerStaff}}{{else}}5{{end}}" class="input">
+          <p class="mt-1 text-sm text-slate-400">1人のスタッフが登録できる希望の上限数</p>
+        </div>
+
+        <!-- 日当たり上限 -->
+        <div>
+          <label for="max_requests_per_day" class="block text-sm font-medium text-slate-300 mb-2">
+            日当たり希望上限数
+          </label>
+          <input type="number" id="max_requests_per_day" name="max_requests_per_day" min="1" max="100"
+            value="{{if .Period}}{{.Period.MaxRequestsPerDay}}{{else}}3{{end}}" class="input">
+          <p class="mt-1 text-sm text-slate-400">1日当たりの希望登録数の上限</p>
+        </div>
+
+        <!-- ボタン -->
+        <div class="flex items-center gap-4 pt-4">
+          <a href="/requests" class="btn btn-secondary">
+            キャンセル
+          </a>
+          <button type="submit" class="btn btn-primary">
+            {{if .Period}}更新{{else}}作成{{end}}
+          </button>
+        </div>
+      </form>
+  </div>
+</div>
+{{end}}

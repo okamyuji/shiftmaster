@@ -1,0 +1,47 @@
+# ShiftMaster Docker Compose 設定
+
+services:
+  # PostgreSQL データベース
+  db:
+    image: postgres:16-alpine
+    container_name: shiftmaster-db
+    environment:
+      POSTGRES_USER: shiftmaster
+      POSTGRES_PASSWORD: shiftmaster_secret
+      POSTGRES_DB: shiftmaster
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shiftmaster -d shiftmaster"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # アプリケーション 開発環境用
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: shiftmaster-app
+    environment:
+      DATABASE_URL: postgres://shiftmaster:shiftmaster_secret@db:5432/shiftmaster?sslmode=disable
+      SERVER_PORT: "8080"
+      SERVER_HOST: "0.0.0.0"
+      LOG_LEVEL: debug
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - go_mod_cache:/go/pkg/mod
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  go_mod_cache:

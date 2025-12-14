@@ -1,0 +1,63 @@
+{{define "base"}}
+<!DOCTYPE html>
+<html lang="ja" class="h-full">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{.Title}} | ShiftMaster</title>
+
+  <!-- Tailwind CSS -->
+  <link rel="stylesheet" href="/static/css/output.css" />
+
+  <!-- HTMX -->
+  <script src="https://unpkg.com/htmx.org@2.0.4" defer></script>
+
+  <!-- Alpine.js -->
+  <script src="https://unpkg.com/alpinejs@3.14.9/dist/cdn.min.js" defer></script>
+
+  <!-- Inter + Noto Sans JP フォント -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+</head>
+
+<body class="h-full bg-gradient-to-br from-slate-50 via-white to-slate-100 text-slate-900 font-sans antialiased">
+  <div class="min-h-full flex flex-col" x-data="{ sidebarOpen: false }">
+    {{template "header" .}}
+
+    <div class="flex-1 flex">
+      {{template "sidebar" .}}
+
+      <main class="flex-1 p-6 lg:p-8">
+        <div class="max-w-7xl mx-auto">{{template "content" .}}</div>
+      </main>
+    </div>
+
+    {{template "footer" .}}
+  </div>
+
+  <!-- HTMX設定 -->
+  <script>
+    document.body.addEventListener("htmx:configRequest", function (evt) {
+      evt.detail.headers["X-Requested-With"] = "XMLHttpRequest";
+    });
+
+    // HX-Redirect ヘッダーによるリダイレクト処理
+    document.body.addEventListener("htmx:beforeSwap", function (evt) {
+      const xhr = evt.detail.xhr;
+      if (xhr) {
+        const redirectUrl = xhr.getResponseHeader("HX-Redirect");
+        if (redirectUrl) {
+          window.location.href = redirectUrl;
+          evt.detail.shouldSwap = false;
+        }
+      }
+    });
+  </script>
+</body>
+
+</html>
+{{end}}

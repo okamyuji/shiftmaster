@@ -1,0 +1,105 @@
+{{define "schedule-list"}}
+<div class="card">
+    {{if .Schedules}}
+    <div class="overflow-x-auto">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="text-left">対象期間</th>
+                    <th class="text-left">状態</th>
+                    <th class="text-left">作成日</th>
+                    <th class="text-left">公開日</th>
+                    <th class="text-right">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{range .Schedules}}
+                <tr>
+                    <td>
+                        <a href="/schedules/{{.ID}}" class="text-blue-400 hover:text-blue-300">
+                            {{.TargetPeriodLabel}}
+                        </a>
+                    </td>
+                    <td>
+                        {{if eq .Status "draft"}}
+                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-slate-600 text-slate-200">{{.StatusLabel}}</span>
+                        {{else if eq .Status "in_progress"}}
+                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-yellow-600 text-yellow-100">{{.StatusLabel}}</span>
+                        {{else if eq .Status "completed"}}
+                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-green-600 text-green-100">{{.StatusLabel}}</span>
+                        {{else if eq .Status "published"}}
+                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-blue-600 text-blue-100">{{.StatusLabel}}</span>
+                        {{else}}
+                        <span class="px-2 py-1 text-xs font-medium rounded-full bg-slate-600 text-slate-200">{{.StatusLabel}}</span>
+                        {{end}}
+                    </td>
+                    <td class="text-slate-400">{{.CreatedAt | formatDateTime}}</td>
+                    <td class="text-slate-400">
+                        {{if .PublishedAt}}{{.PublishedAt | formatDateTime}}{{else}}-{{end}}
+                    </td>
+                    <td>
+                        <div class="flex items-center justify-end gap-2">
+                            <a href="/schedules/{{.ID}}" class="p-2 text-slate-400 hover:text-white transition-colors" title="詳細">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                </svg>
+                            </a>
+                            {{if ne .Status "published"}}
+                            <button 
+                                hx-delete="/schedules/{{.ID}}"
+                                hx-confirm="{{.TargetPeriodLabel}} の勤務表を削除しますか？"
+                                hx-target="closest tr"
+                                hx-swap="outerHTML"
+                                class="p-2 text-red-400 hover:text-red-300 transition-colors"
+                                title="削除"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                </svg>
+                            </button>
+                            {{end}}
+                        </div>
+                    </td>
+                </tr>
+                {{end}}
+            </tbody>
+        </table>
+    </div>
+    {{else}}
+    <div class="p-12 text-center">
+        <div class="flex flex-col items-center gap-4">
+            <svg class="w-16 h-16 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+            <h3 class="text-lg font-medium text-white">勤務表がありません</h3>
+            <p class="text-slate-400">最初の勤務表を作成してください</p>
+            <a href="/schedules/new" class="btn btn-primary">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                </svg>
+                勤務表作成
+            </a>
+        </div>
+    </div>
+    {{end}}
+</div>
+{{end}}
+
+{{define "content"}}
+<div class="space-y-6">
+    <!-- ヘッダー -->
+    <div class="flex items-center justify-between">
+        <h1 class="text-2xl font-bold text-white">勤務表一覧</h1>
+        <a href="/schedules/new" class="btn btn-primary">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+            勤務表作成
+        </a>
+    </div>
+
+    <!-- 勤務表一覧 -->
+    {{template "schedule-list" .}}
+</div>
+{{end}}

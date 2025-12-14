@@ -1,0 +1,146 @@
+{{define "content"}}
+<div class="max-w-2xl mx-auto space-y-6">
+  <!-- ページヘッダー -->
+  <div class="flex items-center gap-4">
+    <a href="/staffs" class="btn btn-ghost p-2">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+      </svg>
+    </a>
+    <div>
+      <h1 class="text-3xl font-bold text-white">{{.Title}}</h1>
+      <p class="mt-1 text-slate-400">スタッフ情報を入力してください</p>
+    </div>
+  </div>
+
+  <!-- フォーム -->
+  <form method="POST" action="{{if .Staff}}/staffs/{{.Staff.ID}}{{else}}/staffs{{end}}" class="card p-6 space-y-6"
+    x-data="{ submitting: false }" @submit="submitting = true">
+    {{if .Staff}}
+    <input type="hidden" name="_method" value="PUT">
+    {{end}}
+
+    <!-- 基本情報 -->
+    <div class="space-y-4">
+      <h2 class="text-lg font-semibold text-white border-b border-slate-700 pb-2">基本情報</h2>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="last_name" class="block text-sm font-medium text-slate-300 mb-1">
+            姓 <span class="text-red-400">*</span>
+          </label>
+          <input type="text" id="last_name" name="last_name" value="{{if .Staff}}{{.Staff.LastName}}{{end}}" required
+            class="input" placeholder="山田">
+        </div>
+        <div>
+          <label for="first_name" class="block text-sm font-medium text-slate-300 mb-1">
+            名 <span class="text-red-400">*</span>
+          </label>
+          <input type="text" id="first_name" name="first_name" value="{{if .Staff}}{{.Staff.FirstName}}{{end}}" required
+            class="input" placeholder="太郎">
+        </div>
+      </div>
+
+      <div>
+        <label for="employee_code" class="block text-sm font-medium text-slate-300 mb-1">
+          社員番号
+        </label>
+        <input type="text" id="employee_code" name="employee_code" value="{{if .Staff}}{{.Staff.EmployeeCode}}{{end}}"
+          class="input" placeholder="EMP001">
+      </div>
+    </div>
+
+    <!-- 連絡先 -->
+    <div class="space-y-4">
+      <h2 class="text-lg font-semibold text-white border-b border-slate-700 pb-2">連絡先</h2>
+
+      <div>
+        <label for="email" class="block text-sm font-medium text-slate-300 mb-1">
+          メールアドレス
+        </label>
+        <input type="email" id="email" name="email" value="{{if .Staff}}{{.Staff.Email}}{{end}}" class="input"
+          placeholder="taro.yamada@example.com">
+      </div>
+
+      <div>
+        <label for="phone" class="block text-sm font-medium text-slate-300 mb-1">
+          電話番号
+        </label>
+        <input type="tel" id="phone" name="phone" value="{{if .Staff}}{{.Staff.Phone}}{{end}}" class="input"
+          placeholder="090-1234-5678">
+      </div>
+    </div>
+
+    <!-- 雇用情報 -->
+    <div class="space-y-4">
+      <h2 class="text-lg font-semibold text-white border-b border-slate-700 pb-2">雇用情報</h2>
+
+      <div>
+        <label for="team_id" class="block text-sm font-medium text-slate-300 mb-1">
+          所属チーム <span class="text-red-400">*</span>
+        </label>
+        <select id="team_id" name="team_id" required class="select">
+          <option value="">選択してください</option>
+          {{range .Teams}}
+          <option value="{{.ID}}" {{if and $.Staff (eq $.Staff.TeamID (.ID.String))}}selected{{end}}>{{.Name}}</option>
+          {{end}}
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label for="employment_type" class="block text-sm font-medium text-slate-300 mb-1">
+            雇用形態
+          </label>
+          <select id="employment_type" name="employment_type" class="select">
+            <option value="full_time" {{if and .Staff (eq .Staff.EmploymentType "full_time" )}}selected{{end}}>正社員
+            </option>
+            <option value="part_time" {{if and .Staff (eq .Staff.EmploymentType "part_time" )}}selected{{end}}>パートタイム
+            </option>
+            <option value="contract" {{if and .Staff (eq .Staff.EmploymentType "contract" )}}selected{{end}}>契約社員
+            </option>
+            <option value="temporary" {{if and .Staff (eq .Staff.EmploymentType "temporary" )}}selected{{end}}>派遣社員
+            </option>
+          </select>
+        </div>
+        <div>
+          <label for="hire_date" class="block text-sm font-medium text-slate-300 mb-1">
+            入社日
+          </label>
+          <input type="date" id="hire_date" name="hire_date" value="{{if .Staff}}{{.Staff.HireDate}}{{end}}"
+            class="input">
+        </div>
+      </div>
+
+      {{if .Staff}}
+      <div>
+        <label class="flex items-center gap-3 cursor-pointer">
+          <input type="checkbox" name="is_active" value="true" {{if .Staff.IsActive}}checked{{end}}
+            class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-primary-600 focus:ring-primary-500">
+          <span class="text-sm font-medium text-slate-300">有効</span>
+        </label>
+      </div>
+      {{end}}
+    </div>
+
+    <!-- 送信ボタン -->
+    <div class="flex justify-end gap-3 pt-4 border-t border-slate-700">
+      <a href="/staffs" class="btn btn-ghost">キャンセル</a>
+      <button type="submit" class="btn btn-primary" :disabled="submitting">
+        <span x-show="!submitting">
+          {{if .Staff}}更新{{else}}登録{{end}}
+        </span>
+        <span x-show="submitting" class="flex items-center gap-2">
+          <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+            </path>
+          </svg>
+          処理中...
+        </span>
+      </button>
+    </div>
+  </form>
+</div>
+{{end}}

@@ -1,0 +1,13 @@
+{
+  "name": "shiftmaster",
+  "version": "1.0.0",
+  "description": "ShiftMaster - 勤務表作成システム",
+  "scripts": {
+    "build:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --minify",
+    "watch:css": "npx tailwindcss -i ./static/css/input.css -o ./static/css/output.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/forms": "^0.5.10",
+    "tailwindcss": "^3.4.19"
+  }
+}

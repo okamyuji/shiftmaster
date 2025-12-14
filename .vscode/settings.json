@@ -1,0 +1,163 @@
+{
+  // ============================================
+  // Go設定
+  // ============================================
+  "go.useLanguageServer": true,
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": ["--fast"],
+  "go.lintOnSave": "package",
+  "go.formatTool": "gofmt",
+  "go.testFlags": ["-v", "-shuffle=on"],
+  "go.testTimeout": "60s",
+  "go.coverOnSave": false,
+  "go.coverOnTestPackage": true,
+  "go.coverageDecorator": {
+    "type": "gutter",
+    "coveredHighlightColor": "rgba(64,128,64,0.2)",
+    "uncoveredHighlightColor": "rgba(128,64,64,0.2)"
+  },
+  "gopls": {
+    "analyses": {
+      "shadow": true,
+      "unusedparams": true,
+      "unusedwrite": true,
+      "nilness": true,
+      "unusedvariable": true
+    },
+    "staticcheck": true,
+    "usePlaceholders": true,
+    "completionBudget": "500ms"
+  },
+
+  // ============================================
+  // エディタ設定
+  // ============================================
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "explicit"
+  },
+  "editor.tabSize": 4,
+  "editor.insertSpaces": false,
+  "editor.detectIndentation": false,
+  "editor.rulers": [100, 120],
+  "editor.wordWrap": "off",
+  "editor.minimap.enabled": false,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.guides.bracketPairs": true,
+
+  // ============================================
+  // ファイル設定
+  // ============================================
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.exclude": {
+    "**/.git": true,
+    "**/node_modules": true,
+    "**/tmp": true,
+    "**/.DS_Store": true
+  },
+  "files.watcherExclude": {
+    "**/node_modules/**": true,
+    "**/tmp/**": true
+  },
+  "files.associations": {
+    "*.html": "html",
+    "*.gohtml": "html"
+  },
+
+  // ============================================
+  // 言語固有設定
+  // ============================================
+  "[go]": {
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "explicit"
+    },
+    "editor.snippetSuggestions": "none",
+    "editor.defaultFormatter": "golang.go"
+  },
+  "[go.mod]": {
+    "editor.formatOnSave": true
+  },
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[css]": {
+    "editor.defaultFormatter": "vscode.css-language-features",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[javascript]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[json]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[yaml]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "[markdown]": {
+    "editor.wordWrap": "on",
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    }
+  },
+
+  // ============================================
+  // ターミナル設定
+  // ============================================
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.defaultProfile.linux": "bash",
+  "terminal.integrated.cwd": "${workspaceFolder}",
+
+  // ============================================
+  // 検索除外
+  // ============================================
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/tmp": true,
+    "**/*.min.js": true,
+    "**/*.min.css": true,
+    "**/static/css/output.css": true
+  },
+
+  // ============================================
+  // Tailwind CSS
+  // ============================================
+  "tailwindCSS.includeLanguages": {
+    "html": "html",
+    "gohtml": "html"
+  },
+  "tailwindCSS.experimental.classRegex": [
+    "class=\"([^\"]*)\""
+  ],
+
+  // ============================================
+  // CSS Tailwindディレクティブ警告抑制
+  // ============================================
+  "css.customData": [".vscode/tailwind.json"],
+  "css.lint.unknownAtRules": "ignore",
+  "scss.lint.unknownAtRules": "ignore",
+
+  // ============================================
+  // Emmet
+  // ============================================
+  "emmet.includeLanguages": {
+    "gohtml": "html"
+  },
+
+  // ============================================
+  // Git設定
+  // ============================================
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true
+}

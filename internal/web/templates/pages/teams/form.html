@@ -1,0 +1,91 @@
+{{define "content"}}
+<div class="max-w-2xl mx-auto space-y-6">
+    <!-- 戻るリンク -->
+    <div>
+        <a href="/teams" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            チーム一覧に戻る
+        </a>
+    </div>
+
+    <!-- フォームカード -->
+    <div class="card p-6">
+        <h1 class="text-xl font-bold text-white mb-6">{{.Title}}</h1>
+
+        <form 
+            {{if .Team}}
+            hx-put="/teams/{{.Team.ID}}"
+            {{else}}
+            hx-post="/teams"
+            {{end}}
+            hx-swap="outerHTML"
+            class="space-y-6"
+        >
+            <!-- 所属部署 -->
+            <div>
+                <label for="department_id" class="block text-sm font-medium text-slate-300 mb-2">
+                    所属部署 <span class="text-red-400">*</span>
+                </label>
+                <select 
+                    id="department_id" 
+                    name="department_id" 
+                    required
+                    class="input"
+                >
+                    <option value="">部署を選択してください</option>
+                    {{range .Departments}}
+                    <option value="{{.ID}}" {{if $.Team}}{{if eq $.Team.DepartmentID.String .ID.String}}selected{{end}}{{end}}>
+                        {{.Name}}{{if .Code}} ({{.Code}}){{end}}
+                    </option>
+                    {{end}}
+                </select>
+            </div>
+
+            <!-- チーム名 -->
+            <div>
+                <label for="name" class="block text-sm font-medium text-slate-300 mb-2">
+                    チーム名 <span class="text-red-400">*</span>
+                </label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    required
+                    value="{{if .Team}}{{.Team.Name}}{{end}}"
+                    class="input"
+                    placeholder="例: 看護1チーム"
+                >
+            </div>
+
+            <!-- コード -->
+            <div>
+                <label for="code" class="block text-sm font-medium text-slate-300 mb-2">
+                    チームコード
+                </label>
+                <input 
+                    type="text" 
+                    id="code" 
+                    name="code"
+                    value="{{if .Team}}{{.Team.Code}}{{end}}"
+                    class="input"
+                    placeholder="例: NURSE1"
+                >
+                <p class="mt-1 text-xs text-slate-500">任意の識別コードを設定できます</p>
+            </div>
+
+            <!-- ボタン -->
+            <div class="flex items-center gap-4 pt-4">
+                <a href="/teams" class="btn btn-secondary">
+                    キャンセル
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    {{if .Team}}更新{{else}}登録{{end}}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{{end}}
+

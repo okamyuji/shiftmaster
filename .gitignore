@@ -1,0 +1,202 @@
+# ============================================
+# ShiftMaster .gitignore
+# ============================================
+
+# ============================================
+# Go バイナリ・ビルド成果物
+# ============================================
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Go coverage
+*.coverprofile
+coverage.out
+coverage.html
+
+# Go vendor（使用しない場合）
+# vendor/
+
+# ============================================
+# 開発用一時ファイル
+# ============================================
+tmp/
+*.tmp
+*.temp
+*.log
+*.pid
+
+# Air（ホットリロード）
+.air.toml.local
+
+# ============================================
+# Node.js / Tailwind CSS
+# ============================================
+node_modules/
+
+# npm debug log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ============================================
+# 環境変数・秘密情報
+# ============================================
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+*.pem
+*.key
+secrets/
+credentials/
+
+# ============================================
+# OS生成ファイル
+# ============================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ============================================
+# IDE・エディタ（開発者体験のため一部を管理）
+# ============================================
+# JetBrains（GoLand等）- ワークスペース固有設定を除外
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/usage.statistics.xml
+.idea/shelf/
+.idea/dictionaries/
+.idea/*.iml
+.idea/modules.xml
+.idea/codeStyles/codeStyleConfig.xml
+
+# Vim
+*.swp
+*.swo
+*.swn
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+Session.vim
+Sessionx.vim
+.netrwhist
+tags
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ============================================
+# デバッグ・プロファイリング
+# ============================================
+*.prof
+*.trace
+debug.test
+__debug_bin*
+*.pprof
+
+# ============================================
+# Docker（ローカル開発用）
+# ============================================
+# Docker Compose override（ローカル設定）
+docker-compose.override.yml
+compose.override.yml
+
+# ============================================
+# データベース・ストレージ
+# ============================================
+*.db
+*.sqlite
+*.sqlite3
+data/
+postgres-data/
+redis-data/
+
+# ============================================
+# テスト関連
+# ============================================
+# カバレッジレポート
+coverage/
+.coverage
+
+# ベンチマーク結果
+benchmarks/
+
+# ============================================
+# Playwright E2Eテスト
+# ============================================
+# テスト結果・レポート（CIで生成されるため除外）
+tests/e2e/playwright/test-results/
+tests/e2e/playwright/playwright-report/
+tests/e2e/playwright/.playwright/
+
+# Playwright ブラウザキャッシュ
+tests/e2e/playwright/node_modules/
+
+# ============================================
+# その他
+# ============================================
+# バックアップファイル
+*.bak
+*.backup
+*.orig
+
+# アーカイブ
+*.zip
+*.tar.gz
+*.rar
+
+# ============================================
+# 管理対象にするファイル（参考）
+# ============================================
+# 以下は .gitignore に含めず、リポジトリで管理します:
+#
+# .vscode/           - VS Code設定（チーム共有推奨）
+#   - settings.json  - プロジェクト固有の設定
+#   - extensions.json - 推奨拡張機能
+#   - launch.json    - デバッグ設定
+#   - tasks.json     - タスク設定
+#   - tailwind.json  - Tailwind CSSカスタムデータ
+#
+# .editorconfig      - エディタ横断的な設定
+# .golangci.yml      - golangci-lint設定
+# .air.toml          - Airホットリロード設定
+# compose.yml        - Docker Compose設定
+# Dockerfile         - Dockerビルド設定
+# Makefile           - ビルド・タスク自動化
+# scripts/           - 開発用スクリプト
+# .githooks/         - Git hooks
+#
+# tests/e2e/playwright/  - Playwright E2Eテスト
+#   - package.json       - 依存関係定義
+#   - playwright.config.ts - Playwright設定
+#   - tests/             - テストファイル

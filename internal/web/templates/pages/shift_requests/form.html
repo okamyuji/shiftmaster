@@ -1,0 +1,100 @@
+{{define "content"}}
+<div class="max-w-2xl mx-auto space-y-6">
+  <!-- 戻るリンク -->
+  <div>
+    <a href="/requests/{{.Period.ID}}/entries"
+      class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      </svg>
+      勤務希望一覧に戻る
+    </a>
+  </div>
+
+  <!-- フォームカード -->
+  <div class="card p-6">
+    <h1 class="text-xl font-bold text-white mb-6">{{.Title}}</h1>
+
+    {{if .Request}}
+    <form hx-put="/requests/{{.Period.ID}}/entries/{{.Request.ID}}" hx-swap="outerHTML" class="space-y-6">
+      {{else}}
+      <form hx-post="/requests/{{.Period.ID}}/entries" hx-swap="outerHTML" class="space-y-6">
+        {{end}}
+        <!-- 対象日 -->
+        <div>
+          <label for="target_date" class="block text-sm font-medium text-slate-300 mb-2">対象日 <span
+              class="text-red-400">*</span></label>
+          <input type="date" id="target_date" name="target_date" required
+            value="{{if .Request}}{{.Request.TargetDate | formatDateInput}}{{end}}" class="input">
+        </div>
+
+        <!-- スタッフ -->
+        <div>
+          <label for="staff_id" class="block text-sm font-medium text-slate-300 mb-2">スタッフ <span
+              class="text-red-400">*</span></label>
+          <select id="staff_id" name="staff_id" required class="input">
+            <option value="">スタッフを選択してください</option>
+            {{range .Staffs}}
+            <option value="{{.ID}}" {{if $.Request}}{{if eq .ID $.Request.StaffID}}selected{{end}}{{end}}>{{.LastName}}
+              {{.FirstName}}</option>
+            {{end}}
+          </select>
+        </div>
+
+        <!-- 希望種別 -->
+        <div>
+          <label for="request_type" class="block text-sm font-medium text-slate-300 mb-2">希望種別 <span
+              class="text-red-400">*</span></label>
+          <select id="request_type" name="request_type" required class="input"
+            x-data="{requestType: '{{if .Request}}{{.Request.RequestType}}{{else}}off{{end}}'}" x-model="requestType"
+            @change="$dispatch('request-type-changed', requestType)">
+            <option value="off" {{if .Request}}{{if eq .Request.RequestType "off" }}selected{{end}}{{end}}>休み希望</option>
+            <option value="work" {{if .Request}}{{if eq .Request.RequestType "work" }}selected{{end}}{{end}}>勤務希望
+            </option>
+            <option value="shift" {{if .Request}}{{if eq .Request.RequestType "shift" }}selected{{end}}{{end}}>シフト指定
+            </option>
+          </select>
+        </div>
+
+        <!-- シフト種別（シフト指定の場合のみ） -->
+        {{$showShift := false}}
+        {{if .Request}}{{if eq .Request.RequestType "shift"}}{{$showShift = true}}{{end}}{{end}}
+        <div x-data="{show: {{$showShift}}}" x-on:request-type-changed.window="show = $event.detail === 'shift'"
+          x-show="show" x-cloak>
+          <label for="shift_type_id" class="block text-sm font-medium text-slate-300 mb-2">希望シフト</label>
+          <select id="shift_type_id" name="shift_type_id" class="input">
+            <option value="">シフトを選択してください</option>
+            {{range .ShiftTypes}}
+            <option value="{{.ID}}" {{if $.Request}}{{if and $.Request.ShiftTypeID (eq .ID
+              $.Request.ShiftTypeID)}}selected{{end}}{{end}}>{{.Name}} ({{.Code}})</option>
+            {{end}}
+          </select>
+        </div>
+
+        <!-- 優先度 -->
+        <div>
+          <label for="priority" class="block text-sm font-medium text-slate-300 mb-2">優先度</label>
+          <select id="priority" name="priority" class="input">
+            <option value="low" {{if .Request}}{{if eq .Request.Priority "low" }}selected{{end}}{{end}}>低</option>
+            <option value="medium" {{if .Request}}{{if eq .Request.Priority "medium"
+              }}selected{{end}}{{else}}selected{{end}}>中</option>
+            <option value="high" {{if .Request}}{{if eq .Request.Priority "high" }}selected{{end}}{{end}}>高</option>
+          </select>
+        </div>
+
+        <!-- コメント -->
+        <div>
+          <label for="comment" class="block text-sm font-medium text-slate-300 mb-2">コメント</label>
+          <textarea id="comment" name="comment" rows="3" placeholder="希望の理由など（任意）"
+            class="input">{{if .Request}}{{.Request.Comment}}{{end}}</textarea>
+        </div>
+
+        <!-- ボタン -->
+        <div class="flex items-center gap-4 pt-4">
+          <a href="/requests/{{.Period.ID}}/entries" class="btn btn-secondary">キャンセル</a>
+          <button type="submit" class="btn btn-primary">{{if .Request}}更新{{else}}登録{{end}}</button>
+        </div>
+      </form>
+  </div>
+</div>
+{{end}}

@@ -1,0 +1,65 @@
+{{define "content"}}
+<div class="max-w-2xl mx-auto space-y-6">
+    <!-- 戻るリンク -->
+    <div>
+        <a href="/schedules" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            勤務表一覧に戻る
+        </a>
+    </div>
+
+    <!-- フォームカード -->
+    <div class="card p-6">
+        <h1 class="text-xl font-bold text-white mb-6">{{.Title}}</h1>
+
+        <form hx-post="/schedules" hx-swap="outerHTML" class="space-y-6">
+            <!-- 対象年 -->
+            <div>
+                <label for="target_year" class="block text-sm font-medium text-slate-300 mb-2">
+                    対象年 <span class="text-red-400">*</span>
+                </label>
+                <select 
+                    id="target_year" 
+                    name="target_year" 
+                    required
+                    class="input"
+                >
+                    {{range .AvailableYears}}
+                    <option value="{{.}}" {{if eq . $.DefaultYear}}selected{{end}}>{{.}}年</option>
+                    {{end}}
+                </select>
+            </div>
+
+            <!-- 対象月 -->
+            <div>
+                <label for="target_month" class="block text-sm font-medium text-slate-300 mb-2">
+                    対象月 <span class="text-red-400">*</span>
+                </label>
+                <select 
+                    id="target_month" 
+                    name="target_month" 
+                    required
+                    class="input"
+                >
+                    {{range $i := iterate 1 13}}
+                    <option value="{{$i}}" {{if eq $i $.DefaultMonth}}selected{{end}}>{{$i}}月</option>
+                    {{end}}
+                </select>
+            </div>
+
+            <!-- ボタン -->
+            <div class="flex items-center gap-4 pt-4">
+                <a href="/schedules" class="btn btn-secondary">
+                    キャンセル
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    作成
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{{end}}
+

@@ -1,0 +1,209 @@
+{{define "content"}}
+<div class="max-w-2xl mx-auto space-y-6">
+    <!-- ページヘッダー -->
+    <div class="flex items-center gap-4">
+        <a href="/shifts" class="btn btn-ghost p-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+            </svg>
+        </a>
+        <div>
+            <h1 class="text-3xl font-bold text-white">{{.Title}}</h1>
+            <p class="mt-1 text-slate-400">シフト種別情報を入力してください</p>
+        </div>
+    </div>
+
+    <!-- フォーム -->
+    <form
+        method="POST"
+        action="{{if .ShiftType}}/shifts/{{.ShiftType.ID}}{{else}}/shifts{{end}}"
+        class="card p-6 space-y-6"
+        x-data="{
+            submitting: false,
+            color: '{{if .ShiftType}}{{.ShiftType.Color}}{{else}}#3B82F6{{end}}'
+        }"
+        @submit="submitting = true"
+    >
+        {{if .ShiftType}}
+        <input type="hidden" name="_method" value="PUT">
+        {{end}}
+
+        <!-- 基本情報 -->
+        <div class="space-y-4">
+            <h2 class="text-lg font-semibold text-white border-b border-slate-700 pb-2">基本情報</h2>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="name" class="block text-sm font-medium text-slate-300 mb-1">
+                        シフト名 <span class="text-red-400">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value="{{if .ShiftType}}{{.ShiftType.Name}}{{end}}"
+                        required
+                        class="input"
+                        placeholder="日勤"
+                    >
+                </div>
+                <div>
+                    <label for="code" class="block text-sm font-medium text-slate-300 mb-1">
+                        コード <span class="text-red-400">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="code"
+                        name="code"
+                        value="{{if .ShiftType}}{{.ShiftType.Code}}{{end}}"
+                        required
+                        maxlength="10"
+                        class="input"
+                        placeholder="日"
+                    >
+                </div>
+            </div>
+
+            <div>
+                <label for="color" class="block text-sm font-medium text-slate-300 mb-1">
+                    表示色
+                </label>
+                <div class="flex items-center gap-4">
+                    <input
+                        type="color"
+                        id="color"
+                        name="color"
+                        x-model="color"
+                        class="w-12 h-12 rounded-lg border-0 cursor-pointer"
+                    >
+                    <input
+                        type="text"
+                        x-model="color"
+                        class="input flex-1"
+                        placeholder="#3B82F6"
+                    >
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center text-white font-bold" :style="'background-color: ' + color">
+                        {{if .ShiftType}}{{.ShiftType.Code}}{{else}}日{{end}}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 時間設定 -->
+        <div class="space-y-4">
+            <h2 class="text-lg font-semibold text-white border-b border-slate-700 pb-2">時間設定</h2>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="start_time" class="block text-sm font-medium text-slate-300 mb-1">
+                        開始時刻 <span class="text-red-400">*</span>
+                    </label>
+                    <input
+                        type="time"
+                        id="start_time"
+                        name="start_time"
+                        value="{{if .ShiftType}}{{.ShiftType.StartTime}}{{else}}09:00{{end}}"
+                        required
+                        class="input"
+                    >
+                </div>
+                <div>
+                    <label for="end_time" class="block text-sm font-medium text-slate-300 mb-1">
+                        終了時刻 <span class="text-red-400">*</span>
+                    </label>
+                    <input
+                        type="time"
+                        id="end_time"
+                        name="end_time"
+                        value="{{if .ShiftType}}{{.ShiftType.EndTime}}{{else}}18:00{{end}}"
+                        required
+                        class="input"
+                    >
+                </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <label for="break_minutes" class="block text-sm font-medium text-slate-300 mb-1">
+                        休憩時間（分）
+                    </label>
+                    <input
+                        type="number"
+                        id="break_minutes"
+                        name="break_minutes"
+                        value="{{if .ShiftType}}{{.ShiftType.BreakMinutes}}{{else}}60{{end}}"
+                        min="0"
+                        max="480"
+                        class="input"
+                    >
+                </div>
+                <div>
+                    <label for="handover_minutes" class="block text-sm font-medium text-slate-300 mb-1">
+                        申し送り時間（分）
+                        <span class="text-xs text-slate-500">引き継ぎ用</span>
+                    </label>
+                    <input
+                        type="number"
+                        id="handover_minutes"
+                        name="handover_minutes"
+                        value="{{if .ShiftType}}{{.ShiftType.HandoverMinutes}}{{else}}0{{end}}"
+                        min="0"
+                        max="120"
+                        class="input"
+                    >
+                    <p class="mt-1 text-xs text-slate-500">病院の申し送りや工場の交代準備時間</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- オプション -->
+        <div class="space-y-4">
+            <h2 class="text-lg font-semibold text-white border-b border-slate-700 pb-2">オプション</h2>
+
+            <div class="flex flex-col gap-3">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        name="is_night_shift"
+                        value="true"
+                        {{if and .ShiftType .ShiftType.IsNightShift}}checked{{end}}
+                        class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-primary-600 focus:ring-primary-500"
+                    >
+                    <span class="text-sm font-medium text-slate-300">夜勤シフト</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input
+                        type="checkbox"
+                        name="is_holiday"
+                        value="true"
+                        {{if and .ShiftType .ShiftType.IsHoliday}}checked{{end}}
+                        class="w-5 h-5 rounded border-slate-600 bg-slate-700 text-primary-600 focus:ring-primary-500"
+                    >
+                    <span class="text-sm font-medium text-slate-300">休日シフト</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- 送信ボタン -->
+        <div class="flex justify-end gap-3 pt-4 border-t border-slate-700">
+            <a href="/shifts" class="btn btn-ghost">キャンセル</a>
+            <button
+                type="submit"
+                class="btn btn-primary"
+                :disabled="submitting"
+            >
+                <span x-show="!submitting">
+                    {{if .ShiftType}}更新{{else}}登録{{end}}
+                </span>
+                <span x-show="submitting" class="flex items-center gap-2">
+                    <svg class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    処理中...
+                </span>
+            </button>
+        </div>
+    </form>
+</div>
+{{end}}
